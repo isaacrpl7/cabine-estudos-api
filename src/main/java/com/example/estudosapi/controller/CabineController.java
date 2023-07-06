@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.estudosapi.model.Cabine;
-import com.example.estudosapi.model.enums.EnumStatusCabine;
+import com.example.estudosapi.model.dtos.CabineStatusDTO;
 import com.example.estudosapi.service.CabineService;
 
 @RestController
@@ -39,8 +39,8 @@ public class CabineController {
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<Cabine> modificarStatus(@PathVariable Long idCabine, EnumStatusCabine novoStatus){
-        return ResponseEntity.ok(service.modificarStatus(idCabine, novoStatus));
+    public ResponseEntity<Cabine> modificarStatus(@PathVariable Long idCabine, @RequestBody CabineStatusDTO dto){
+        return ResponseEntity.ok(service.modificarStatus(idCabine, dto.getStatus()));
     }
 
 }
