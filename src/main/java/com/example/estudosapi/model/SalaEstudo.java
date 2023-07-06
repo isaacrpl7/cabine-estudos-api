@@ -1,5 +1,6 @@
 package com.example.estudosapi.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -24,6 +25,10 @@ public class SalaEstudo {
 
     @OneToMany(mappedBy = "salaEstudo", cascade = CascadeType.ALL)
     private List<Cabine> cabines;
+
+    public SalaEstudo(){
+        this.cabines = new ArrayList<>();
+    }
 
     public Long getId() {
         return id;

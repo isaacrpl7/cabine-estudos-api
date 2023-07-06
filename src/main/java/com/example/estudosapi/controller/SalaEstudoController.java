@@ -13,34 +13,38 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.estudosapi.model.Cabine;
-import com.example.estudosapi.model.enums.EnumStatusCabine;
-import com.example.estudosapi.service.CabineService;
+import com.example.estudosapi.model.SalaEstudo;
+import com.example.estudosapi.service.SalaEstudoService;
 
 @RestController
-@RequestMapping("/cabines")
-public class CabineController {
+@RequestMapping("/salas")
+public class SalaEstudoController {
     
     @Autowired
-    private CabineService service;
+    private SalaEstudoService service;
 
     @PostMapping
-    public ResponseEntity<Cabine> cadastrar(@RequestBody(required = true) Cabine entity){
+    public ResponseEntity<SalaEstudo> cadastrar(@RequestBody(required = true) SalaEstudo entity){
         return ResponseEntity.ok(service.cadastrar(entity));
     } 
 
     @GetMapping
-    public ResponseEntity<List<Cabine>> findAll(){
+    public ResponseEntity<List<SalaEstudo>> findAll(){
         return ResponseEntity.ok(service.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Cabine> findById(@PathVariable Long id){
+    public ResponseEntity<SalaEstudo> findById(@PathVariable Long id){
         return ResponseEntity.ok(service.findById(id));
     }
 
-    @PutMapping("/{id}/status")
-    public ResponseEntity<Cabine> modificarStatus(@PathVariable Long idCabine, EnumStatusCabine novoStatus){
-        return ResponseEntity.ok(service.modificarStatus(idCabine, novoStatus));
+    @GetMapping("/{id}/cabines")
+    public ResponseEntity<List<Cabine>> listarCabines(@PathVariable Long id){
+        return ResponseEntity.ok(service.listarCabines(id));
     }
 
+    @PutMapping("/{id}/cabines")
+    public ResponseEntity<SalaEstudo> cadastrarCabine(@PathVariable Long id, @RequestBody(required = true) Cabine entity){
+        return ResponseEntity.ok(service.findById(id));
+    }
 }
