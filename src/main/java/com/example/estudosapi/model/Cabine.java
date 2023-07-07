@@ -1,6 +1,7 @@
 package com.example.estudosapi.model;
 
 import com.example.estudosapi.model.enums.EnumStatusCabine;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,9 +20,10 @@ public class Cabine {
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private EnumStatusCabine status;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "sala_id")
     private SalaEstudo salaEstudo;

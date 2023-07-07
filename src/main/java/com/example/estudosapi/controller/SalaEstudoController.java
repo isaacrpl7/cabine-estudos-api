@@ -17,7 +17,7 @@ import com.example.estudosapi.model.SalaEstudo;
 import com.example.estudosapi.service.SalaEstudoService;
 
 @RestController
-@RequestMapping("/salas")
+@RequestMapping("sala-estudo")
 public class SalaEstudoController {
     
     @Autowired
@@ -44,7 +44,8 @@ public class SalaEstudoController {
     }
 
     @PutMapping("/{id}/cabines")
-    public ResponseEntity<SalaEstudo> cadastrarCabine(@PathVariable Long id, @RequestBody(required = true) Cabine entity){
-        return ResponseEntity.ok(service.findById(id));
+    public ResponseEntity<SalaEstudo> cadastrarCabine(@PathVariable Long id, 
+        @RequestBody(required = true) Cabine entity){
+        return ResponseEntity.ok(service.cadastrarCabine(id, entity));
     }
 }

@@ -17,7 +17,7 @@ import com.example.estudosapi.model.dtos.CabineStatusDTO;
 import com.example.estudosapi.service.CabineService;
 
 @RestController
-@RequestMapping("/cabines")
+@RequestMapping("cabines")
 public class CabineController {
     
     @Autowired

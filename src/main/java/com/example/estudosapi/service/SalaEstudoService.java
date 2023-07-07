@@ -11,6 +11,7 @@ import com.example.estudosapi.exceptions.ConflictException;
 import com.example.estudosapi.exceptions.NotFoundException;
 import com.example.estudosapi.model.Cabine;
 import com.example.estudosapi.model.SalaEstudo;
+import com.example.estudosapi.model.enums.EnumStatusCabine;
 import com.example.estudosapi.repository.SalaEstudoRepository;
 
 @Service
@@ -50,6 +51,7 @@ public class SalaEstudoService {
         SalaEstudo sala = findById(idSala);
 
         entity.setSalaEstudo(sala);
+        entity.setStatus(EnumStatusCabine.DISPONIVEL);
         sala.getCabines().add(entity);
 
         return repository.save(sala);
