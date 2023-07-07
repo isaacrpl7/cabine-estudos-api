@@ -39,7 +39,7 @@ public class CabineController {
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<Cabine> modificarStatus(@PathVariable Long idCabine, @RequestBody CabineStatusDTO dto){
+    public ResponseEntity<Cabine> modificarStatus(@PathVariable("id") Long idCabine, @RequestBody CabineStatusDTO dto){
         return ResponseEntity.ok(service.modificarStatus(idCabine, dto.getStatus()));
     }
 
