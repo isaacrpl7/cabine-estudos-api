@@ -14,6 +14,8 @@ import com.example.estudosapi.model.SalaEstudo;
 import com.example.estudosapi.model.enums.EnumStatusCabine;
 import com.example.estudosapi.repository.SalaEstudoRepository;
 
+import jakarta.annotation.PostConstruct;
+
 @Service
 public class SalaEstudoService {
     
@@ -22,6 +24,27 @@ public class SalaEstudoService {
 
     @Autowired
     private CabineService cabineService;
+
+    @PostConstruct
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+    private void preCadastro(){
+        Cabine cabine = null;
+
+        try {
+            cabine = cabineService.findById(1L);
+        } catch (Exception e) {
+            cabine = new Cabine();
+            cabine.setStatus(EnumStatusCabine.DISPONIVEL);
+            
+            SalaEstudo sala = new SalaEstudo();
+            sala.setNome("LCC-2");
+            sala.getCabines().add(cabine);
+    
+            cabine.setSalaEstudo(sala);
+    
+            repository.save(sala);
+        }
+    }
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
     public List<SalaEstudo> findAll(){
