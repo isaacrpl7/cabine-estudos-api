@@ -4,7 +4,7 @@ COPY . /root/estudos-api
 WORKDIR /root/estudos-api
 ENV TZ=America/Fortaleza
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-#RUN mvn clean package -DskipTests
+RUN mvn clean package -DskipTests
 RUN mv target/*.jar target/app.jar
 ENTRYPOINT ["java","-jar","target/app.jar", \
 "--spring.jpa.hibernate.ddl-auto=${JPA_HIBERNATE_DDL_AUTO}", \
