@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.estudosapi.model.Reserva;
 import com.example.estudosapi.model.Usuario;
 import com.example.estudosapi.service.UsuarioService;
 
@@ -34,5 +35,10 @@ public class UsuarioController {
     @GetMapping("/{id}")
     public ResponseEntity<Usuario> findById(@PathVariable Long id){
         return ResponseEntity.ok(service.findById(id));
+    }
+
+    @GetMapping("/{id}/reservas")
+    public ResponseEntity<List<Reserva>> listarReservas(@PathVariable Long id){
+        return ResponseEntity.ok(service.listarReservas(id));
     }
 }

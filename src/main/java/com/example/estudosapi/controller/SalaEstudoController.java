@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.estudosapi.model.Cabine;
 import com.example.estudosapi.model.SalaEstudo;
+import com.example.estudosapi.model.dtos.ReservarCabineDTO;
 import com.example.estudosapi.service.SalaEstudoService;
 
 @RestController
@@ -47,5 +48,13 @@ public class SalaEstudoController {
     public ResponseEntity<SalaEstudo> cadastrarCabine(@PathVariable Long id, 
         @RequestBody(required = true) Cabine entity){
         return ResponseEntity.ok(service.cadastrarCabine(id, entity));
+    }
+
+    @PutMapping("/{id}/cabines/{idCabine}")
+    public ResponseEntity<SalaEstudo> reservarCabine(
+        @PathVariable("id") Long idSala, 
+        @PathVariable("idCabine") Long idCabine, 
+        @RequestBody(required = true) ReservarCabineDTO dto){
+        return ResponseEntity.ok(service.reservarCabine(idSala, idCabine, dto));
     }
 }

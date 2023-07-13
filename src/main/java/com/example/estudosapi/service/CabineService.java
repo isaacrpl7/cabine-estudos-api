@@ -1,5 +1,6 @@
 package com.example.estudosapi.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import com.example.estudosapi.exceptions.BadRequestException;
 import com.example.estudosapi.exceptions.ConflictException;
 import com.example.estudosapi.exceptions.NotFoundException;
 import com.example.estudosapi.model.Cabine;
+import com.example.estudosapi.model.dtos.CabineStatusDTO;
 import com.example.estudosapi.model.enums.EnumStatusCabine;
 import com.example.estudosapi.repository.CabineRepository;
 
@@ -42,16 +44,18 @@ public class CabineService {
         return repository.save(entity);
     }
 
-    public Cabine modificarStatus(Long id, EnumStatusCabine novoStatus){
+    public Cabine modificarStatus(Long id, CabineStatusDTO dto){
         Cabine cabine = findById(id);
 
-        if(novoStatus == EnumStatusCabine.DISPONIVEL){
+        EnumStatusCabine statusEnviado = dto.getStatus();
+
+        if(statusEnviado.equals(EnumStatusCabine.DISPONIVEL)){
             return liberar(cabine);
         }
-        else if(novoStatus == EnumStatusCabine.RESERVADA){
-            return reservar(cabine);
+        else if(statusEnviado.equals(EnumStatusCabine.RESERVADA)){
+            return reservar(cabine, dto.getHorarioReserva());
         }
-        else if(novoStatus == EnumStatusCabine.OCUPADA){
+        else if(statusEnviado.equals(EnumStatusCabine.OCUPADA)){
             return ocupar(cabine);
         }
         else
@@ -60,11 +64,15 @@ public class CabineService {
 
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    private Cabine reservar(Cabine cabine){
+    private Cabine reservar(Cabine cabine, LocalDateTime horario){
 
         if(cabine.getStatus() != EnumStatusCabine.DISPONIVEL)
             throw new ConflictException("A cabine não está disponível para reserva.");
         
+        if(horario == null)
+            throw new BadRequestException("O horário informado é inválido (null)");
+
+        cabine.setHorarioReserva(horario);
         cabine.setStatus(EnumStatusCabine.RESERVADA);
         return update(cabine);
     }
