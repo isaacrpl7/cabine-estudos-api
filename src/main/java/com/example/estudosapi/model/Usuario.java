@@ -2,6 +2,8 @@ package com.example.estudosapi.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,6 +29,7 @@ public class Usuario {
     @NotBlank
     private String email;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "usuario")
     private List<Reserva> reservas;
 

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.estudosapi.exceptions.NotFoundException;
+import com.example.estudosapi.model.Reserva;
 import com.example.estudosapi.model.Usuario;
 import com.example.estudosapi.repository.UsuarioRepository;
 
@@ -23,7 +24,8 @@ public class UsuarioService {
     @PostConstruct
     @Transactional(readOnly = false)
     public void mockUsers(){
-        repository.deleteAll();
+        if(repository.count() != 0)
+            return;
 
         Usuario daniel = new Usuario();
         daniel.setNome("Daniel Sehn Colao");
@@ -82,6 +84,16 @@ public class UsuarioService {
     public Usuario findByMatricula(String matricula){
         Optional<Usuario> usuario = repository.findByMatricula(matricula);
         return usuario.isPresent() ? usuario.get() : null;
+    }
+
+    public Usuario findByEmail(String email){
+        return repository.findByEmail(email)
+        .orElseThrow(() -> new NotFoundException("Usuário não encontrado com este e-mail."));
+    }
+
+    public List<Reserva> listarReservas(Long id){
+        Usuario usuario = findById(id);
+        return usuario.getReservas();
     }
 
 }
