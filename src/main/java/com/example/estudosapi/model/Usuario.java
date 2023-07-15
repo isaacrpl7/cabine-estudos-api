@@ -1,5 +1,6 @@
 package com.example.estudosapi.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -31,7 +32,7 @@ public class Usuario {
 
     @JsonIgnore
     @OneToMany(mappedBy = "usuario")
-    private List<Reserva> reservas;
+    private List<Reserva> reservas = new ArrayList<>();
 
     public Long getId() {
         return id;
