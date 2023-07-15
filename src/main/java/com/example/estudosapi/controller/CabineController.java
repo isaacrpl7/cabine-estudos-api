@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.estudosapi.model.Cabine;
 import com.example.estudosapi.model.dtos.CabineStatusDTO;
+import com.example.estudosapi.model.dtos.ReservaDTO;
 import com.example.estudosapi.service.CabineService;
 
 @RestController
@@ -43,4 +44,13 @@ public class CabineController {
         return ResponseEntity.ok(service.modificarStatus(idCabine, dto));
     }
 
+    @GetMapping("/{id}/proxima-reserva")
+    public ResponseEntity<ReservaDTO> obterProximaReserva(@PathVariable("id") Long idCabine){
+        return ResponseEntity.ok(service.obterProximaReserva(idCabine));
+    }
+
+    @GetMapping("/{id}/reservas")
+    public ResponseEntity<List<ReservaDTO>> listarReservas(@PathVariable("id") Long idCabine){
+        return ResponseEntity.ok(service.listarReservas(idCabine));
+    }
 }
