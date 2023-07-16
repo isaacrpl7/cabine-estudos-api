@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.estudosapi.exceptions.BadRequestException;
 import com.example.estudosapi.exceptions.ConflictException;
+import com.example.estudosapi.exceptions.ForbiddenException;
 import com.example.estudosapi.exceptions.NotFoundException;
 import com.example.estudosapi.model.Cabine;
 import com.example.estudosapi.model.Reserva;
@@ -108,7 +109,14 @@ public class SalaEstudoService {
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public SalaEstudo reservarCabine(Long idSala, Long idCabine, ReservarCabineDTO dto){
         SalaEstudo sala = findById(idSala);
-        Cabine cabine = null; //cabineService.findById(idCabine);
+
+        Usuario usuario = usuarioService.findByEmail(dto.getUsuarioEmail());
+
+        if(!usuarioService.validarCredenciais(usuario.getEmail(), dto.getUsuarioSenha())){
+            throw new ForbiddenException("Email ou senha inválido.");
+        }
+
+        Cabine cabine = null;
 
         for (Cabine cabineSala : sala.getCabines()) {
             if(cabineSala.getId().equals(idCabine))
@@ -131,7 +139,7 @@ public class SalaEstudoService {
             }
         }
         
-        Usuario usuario = usuarioService.findByEmail(dto.getUsuarioEmail());
+        
 
         Reserva reserva = new Reserva();
         reserva.setCabine(cabine);

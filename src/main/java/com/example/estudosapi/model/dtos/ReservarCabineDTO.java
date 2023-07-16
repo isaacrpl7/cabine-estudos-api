@@ -4,16 +4,11 @@ import java.time.LocalDateTime;
 
 public class ReservarCabineDTO {
 
-    private String usuarioMatricula;
+    private String usuarioSenha;
     private String usuarioEmail;
     private LocalDateTime horario;
 
-    public String getUsuarioMatricula() {
-        return usuarioMatricula;
-    }
-    public void setUsuarioMatricula(String usuarioMatricula) {
-        this.usuarioMatricula = usuarioMatricula;
-    }
+    
     public String getUsuarioEmail() {
         return usuarioEmail;
     }
@@ -25,6 +20,12 @@ public class ReservarCabineDTO {
     }
     public void setHorario(LocalDateTime horario) {
         this.horario = horario;
+    }
+    public String getUsuarioSenha() {
+        return usuarioSenha;
+    }
+    public void setUsuarioSenha(String usuarioSenha) {
+        this.usuarioSenha = usuarioSenha;
     }
 
 }

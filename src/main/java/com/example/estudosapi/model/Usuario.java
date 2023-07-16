@@ -21,13 +21,15 @@ public class Usuario {
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
 
-    @NotBlank
     private String nome;
 
-    @NotBlank
     private String matricula;
 
     @NotBlank
+    private String senha;
+
+    @NotBlank
+    @Column(unique = true)
     private String email;
 
     @JsonIgnore
@@ -64,4 +66,11 @@ public class Usuario {
     public void setEmail(String email) {
         this.email = email;
     }
+    public String getSenha() {
+        return senha;
+    }
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+    
 }
