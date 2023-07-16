@@ -130,12 +130,12 @@ public class SalaEstudoService {
         List<Reserva> reservas = cabine.getReservas();
         if(reservas.size() != 0){
             if(dto.getHorario().isBefore(LocalDateTime.now())){
-                throw new BadRequestException("Horário já passou.");
+                throw new BadRequestException("O horário informado já passou.");
             }
 
-            Reserva ultimaReserva = reservas.get(reservas.size()-1);
-            if(ultimaReserva.getHorario() != null && ultimaReserva.getHorario().plusMinutes(30).isAfter(dto.getHorario())){
-                throw new ConflictException("A cabine informada já foi reservada. Tente outro horário");
+            for (Reserva reserva : reservas) {
+                if(reserva.getHorario().equals(dto.getHorario()))
+                    throw new ConflictException("A cabine informada já foi reservada. Tente outro horário");
             }
         }
         
