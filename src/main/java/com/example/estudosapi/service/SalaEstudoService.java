@@ -1,5 +1,6 @@
 package com.example.estudosapi.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.estudosapi.exceptions.BadRequestException;
 import com.example.estudosapi.exceptions.ConflictException;
+import com.example.estudosapi.exceptions.ForbiddenException;
 import com.example.estudosapi.exceptions.NotFoundException;
 import com.example.estudosapi.model.Cabine;
 import com.example.estudosapi.model.Reserva;
@@ -45,7 +48,7 @@ public class SalaEstudoService {
         } catch (Exception e) {
             cabine = new Cabine();
             cabine.setStatus(EnumStatusCabine.DISPONIVEL);
-            
+
             SalaEstudo sala = new SalaEstudo();
             sala.setNome("LCC-2");
             sala.getCabines().add(cabine);
@@ -106,21 +109,37 @@ public class SalaEstudoService {
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public SalaEstudo reservarCabine(Long idSala, Long idCabine, ReservarCabineDTO dto){
         SalaEstudo sala = findById(idSala);
-        Cabine cabine = null; //cabineService.findById(idCabine);
 
-        for (Cabine cabine2 : sala.getCabines()) {
-            if(cabine2.getId().equals(idCabine))
-                cabine = cabine2;
+        Usuario usuario = usuarioService.findByEmail(dto.getUsuarioEmail());
+
+        if(!usuarioService.validarCredenciais(usuario.getEmail(), dto.getUsuarioSenha())){
+            throw new ForbiddenException("Email ou senha inválido.");
+        }
+
+        Cabine cabine = null;
+
+        for (Cabine cabineSala : sala.getCabines()) {
+            if(cabineSala.getId().equals(idCabine))
+                cabine = cabineSala;
         }
 
         if(cabine == null)
             throw new NotFoundException("Cabine de estudo não encontrada com este id.");
 
-        if(!cabine.getStatus().equals(EnumStatusCabine.DISPONIVEL))
-            throw new ConflictException("A cabine informada está em uso ou foi reservada.");
+    
+        List<Reserva> reservas = cabine.getReservas();
+        if(reservas.size() != 0){
+            if(dto.getHorario().isBefore(LocalDateTime.now())){
+                throw new BadRequestException("O horário informado já passou.");
+            }
 
+            for (Reserva reserva : reservas) {
+                if(reserva.getHorario().equals(dto.getHorario()))
+                    throw new ConflictException("A cabine informada já foi reservada. Tente outro horário");
+            }
+        }
         
-        Usuario usuario = usuarioService.findByEmail(dto.getUsuarioEmail());
+        
 
         Reserva reserva = new Reserva();
         reserva.setCabine(cabine);
@@ -133,7 +152,7 @@ public class SalaEstudoService {
 
         cabine.setStatus(EnumStatusCabine.RESERVADA);
         cabine.setHorarioReserva(dto.getHorario());
-        cabine.getReservas().add(reserva);
+        cabine.getReservas().add(cabine.getReservas().size(), reserva);
 
         return repository.save(sala); //Atualizacao na sala de estudo faz cascading na cabine
     }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,8 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.estudosapi.model.Cabine;
 import com.example.estudosapi.model.dtos.CabineStatusDTO;
+import com.example.estudosapi.model.dtos.ReservaDTO;
 import com.example.estudosapi.service.CabineService;
 
+@CrossOrigin
 @RestController
 @RequestMapping("cabines")
 public class CabineController {
@@ -43,4 +46,13 @@ public class CabineController {
         return ResponseEntity.ok(service.modificarStatus(idCabine, dto));
     }
 
+    @GetMapping("/{id}/proxima-reserva")
+    public ResponseEntity<ReservaDTO> obterProximaReserva(@PathVariable("id") Long idCabine){
+        return ResponseEntity.ok(service.obterProximaReserva(idCabine));
+    }
+
+    @GetMapping("/{id}/reservas")
+    public ResponseEntity<List<ReservaDTO>> listarReservas(@PathVariable("id") Long idCabine){
+        return ResponseEntity.ok(service.listarReservas(idCabine));
+    }
 }

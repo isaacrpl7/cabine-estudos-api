@@ -2,6 +2,7 @@ package com.example.estudosapi.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,9 @@ import com.example.estudosapi.exceptions.BadRequestException;
 import com.example.estudosapi.exceptions.ConflictException;
 import com.example.estudosapi.exceptions.NotFoundException;
 import com.example.estudosapi.model.Cabine;
+import com.example.estudosapi.model.Reserva;
 import com.example.estudosapi.model.dtos.CabineStatusDTO;
+import com.example.estudosapi.model.dtos.ReservaDTO;
 import com.example.estudosapi.model.enums.EnumStatusCabine;
 import com.example.estudosapi.repository.CabineRepository;
 
@@ -97,5 +100,42 @@ public class CabineService {
         
         cabine.setStatus(EnumStatusCabine.OCUPADA);
         return update(cabine);
+    }
+
+    public ReservaDTO obterProximaReserva(Long id){
+        Cabine cabine = findById(id);
+        ReservaDTO dto = new ReservaDTO();
+
+        int size = cabine.getReservas().size();
+        if(size == 0)
+            return dto;
+
+        Reserva proximaReserva = cabine.getReservas().get(size-1);
+        if( proximaReserva.getHorario() != null 
+            && proximaReserva.getHorario().plusMinutes(30).isBefore(LocalDateTime.now()))
+            return dto;
+
+        for (Reserva reserva : cabine.getReservas()) {
+            if(reserva.getHorario() != null
+                && reserva.getHorario().isAfter(LocalDateTime.now())){
+                dto.setHorario(reserva.getHorario());
+                break;
+            }
+        }
+        if(dto.getHorario() == null)
+            return dto;
+        dto.setUsuario(proximaReserva.getUsuario());
+
+        return dto;
+    }
+
+    public List<ReservaDTO> listarReservas(Long id){
+        Cabine cabine = findById(id);
+
+        List<Reserva> reservas = cabine.getReservas();
+        
+        return reservas.stream()
+                        .map(x -> new ReservaDTO(x.getHorario(), x.getUsuario()))
+                        .collect(Collectors.toList());
     }
 }

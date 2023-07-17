@@ -1,5 +1,6 @@
 package com.example.estudosapi.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -20,18 +21,20 @@ public class Usuario {
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
 
-    @NotBlank
     private String nome;
 
-    @NotBlank
     private String matricula;
 
     @NotBlank
+    private String senha;
+
+    @NotBlank
+    @Column(unique = true)
     private String email;
 
     @JsonIgnore
     @OneToMany(mappedBy = "usuario")
-    private List<Reserva> reservas;
+    private List<Reserva> reservas = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -63,4 +66,11 @@ public class Usuario {
     public void setEmail(String email) {
         this.email = email;
     }
+    public String getSenha() {
+        return senha;
+    }
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+    
 }

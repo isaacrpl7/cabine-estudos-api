@@ -1,6 +1,7 @@
 package com.example.estudosapi.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.example.estudosapi.model.enums.EnumStatusCabine;
@@ -37,7 +38,7 @@ public class Cabine {
 
     @JsonIgnore
     @OneToMany(mappedBy = "cabine", cascade = CascadeType.ALL)
-    private List<Reserva> reservas;
+    private List<Reserva> reservas = new ArrayList<>();
 
     public Long getId() {
         return id;
