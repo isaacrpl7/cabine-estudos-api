@@ -6,9 +6,11 @@ import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 
@@ -25,6 +27,9 @@ public class SalaEstudo {
 
     @OneToMany(mappedBy = "salaEstudo", cascade = CascadeType.ALL)
     private List<Cabine> cabines;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
+    private Localizacao localizacao;
 
     public SalaEstudo(){
         this.cabines = new ArrayList<>();
@@ -52,6 +57,14 @@ public class SalaEstudo {
 
     public void setCabines(List<Cabine> cabines) {
         this.cabines = cabines;
+    }
+
+    public Localizacao getLocalizacao() {
+        return localizacao;
+    }
+
+    public void setLocalizacao(Localizacao localizacao) {
+        this.localizacao = localizacao;
     }
 
     

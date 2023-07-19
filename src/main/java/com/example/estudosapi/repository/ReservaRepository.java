@@ -8,4 +8,5 @@ import com.example.estudosapi.model.Reserva;
 @Repository
 public interface ReservaRepository extends JpaRepository<Reserva, Long>{
     
+    Reserva findByCabineId(Long id);
 }

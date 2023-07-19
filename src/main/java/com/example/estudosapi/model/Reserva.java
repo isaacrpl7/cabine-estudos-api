@@ -28,6 +28,8 @@ public class Reserva {
 
     private LocalDateTime horario;
 
+    private LocalDateTime horarioFinal;
+
     public Long getId() {
         return id;
     }
@@ -59,5 +61,14 @@ public class Reserva {
     public void setHorario(LocalDateTime horario) {
         this.horario = horario;
     }
+
+    public LocalDateTime getHorarioFinal() {
+        return horarioFinal;
+    }
+
+    public void setHorarioFinal(LocalDateTime horarioFinal) {
+        this.horarioFinal = horarioFinal;
+    }
+    
 
 }

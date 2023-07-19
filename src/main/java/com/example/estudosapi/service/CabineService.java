@@ -2,9 +2,11 @@ package com.example.estudosapi.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +16,7 @@ import com.example.estudosapi.exceptions.ConflictException;
 import com.example.estudosapi.exceptions.NotFoundException;
 import com.example.estudosapi.model.Cabine;
 import com.example.estudosapi.model.Reserva;
+import com.example.estudosapi.model.dtos.CabineDTO;
 import com.example.estudosapi.model.dtos.CabineStatusDTO;
 import com.example.estudosapi.model.dtos.ReservaDTO;
 import com.example.estudosapi.model.enums.EnumStatusCabine;
@@ -31,9 +34,41 @@ public class CabineService {
     }
     
     @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
+    public CabineDTO findByIdDTO(Long id){
+        Optional<Cabine> cabinee = repository.findById(id);
+        if(cabinee.isEmpty()){
+            throw new NotFoundException("Cabine não encontrada com este id.");
+        }
+        CabineDTO dto = new CabineDTO();
+
+        Cabine cabine = cabinee.get();
+
+        dto.setStatus(cabine.getStatus());
+        
+        if(cabine.getStatus() == EnumStatusCabine.RESERVADA){
+
+            for (Reserva reserva : cabine.getReservas()) {
+                if(
+                    (LocalDateTime.now().isAfter(reserva.getHorario()) || LocalDateTime.now().isEqual(reserva.getHorario()))
+                    && 
+                    (LocalDateTime.now().isBefore(reserva.getHorarioFinal()) || LocalDateTime.now().isEqual(reserva.getHorarioFinal()))
+                ){
+                    
+                    dto.setHorarioInicial(reserva.getHorario());
+                    dto.setHorarioFinal(reserva.getHorarioFinal());
+                }
+                    
+            }
+        }
+        
+        return dto;
+    }
+
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
     public Cabine findById(Long id){
         return repository.findById(id)
         .orElseThrow(() -> new NotFoundException("Cabine não encontrada com este id."));
+        
     }
     
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
@@ -124,8 +159,8 @@ public class CabineService {
         }
         if(dto.getHorario() == null)
             return dto;
-        dto.setUsuario(proximaReserva.getUsuario());
 
+        dto.setUsuario(proximaReserva.getUsuario());
         return dto;
     }
 
@@ -137,5 +172,29 @@ public class CabineService {
         return reservas.stream()
                         .map(x -> new ReservaDTO(x.getHorario(), x.getUsuario()))
                         .collect(Collectors.toList());
+    }
+
+
+    @Scheduled(fixedDelay = 3000)
+    @Transactional(readOnly = false)
+    protected void fun(){
+        Optional<Cabine> a = repository.findById(1L);
+
+        if(a.isEmpty())
+            return;
+
+        Cabine cabine = a.get();
+        System.out.println("Verificando reservas...");
+        for (Reserva reserva : cabine.getReservas()) {
+
+            if( LocalDateTime.now().isBefore(reserva.getHorario())
+            &&  LocalDateTime.now().isAfter(reserva.getHorario().minusSeconds(10))){
+
+                cabine.setStatus(EnumStatusCabine.RESERVADA);
+            }
+
+        }
+
+        repository.save(cabine);
     }
 }

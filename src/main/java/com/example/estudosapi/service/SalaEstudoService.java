@@ -13,6 +13,7 @@ import com.example.estudosapi.exceptions.ConflictException;
 import com.example.estudosapi.exceptions.ForbiddenException;
 import com.example.estudosapi.exceptions.NotFoundException;
 import com.example.estudosapi.model.Cabine;
+import com.example.estudosapi.model.Localizacao;
 import com.example.estudosapi.model.Reserva;
 import com.example.estudosapi.model.SalaEstudo;
 import com.example.estudosapi.model.Usuario;
@@ -46,12 +47,18 @@ public class SalaEstudoService {
         try {
             cabine = cabineService.findById(1L);
         } catch (Exception e) {
+            Localizacao localizacao = new Localizacao();
+            localizacao.setBloco("DIMAP");
+            localizacao.setSetor("SETOR IV");
+
+
             cabine = new Cabine();
             cabine.setStatus(EnumStatusCabine.DISPONIVEL);
 
             SalaEstudo sala = new SalaEstudo();
             sala.setNome("LCC-2");
             sala.getCabines().add(cabine);
+            sala.setLocalizacao(localizacao);
     
             cabine.setSalaEstudo(sala);
     
@@ -134,23 +141,27 @@ public class SalaEstudoService {
             }
 
             for (Reserva reserva : reservas) {
-                if(reserva.getHorario().equals(dto.getHorario()))
-                    throw new ConflictException("A cabine informada já foi reservada. Tente outro horário");
+
+                if( (dto.getHorario().isAfter(reserva.getHorario()) || dto.getHorario().isEqual(reserva.getHorario()))
+                    && 
+                    (dto.getHorario().isBefore(reserva.getHorarioFinal()) || dto.getHorario().isEqual(reserva.getHorario()))){
+                    throw new ConflictException("Conflito de horário entre reservas.");
+                }
+
             }
         }
-        
-        
 
         Reserva reserva = new Reserva();
         reserva.setCabine(cabine);
         reserva.setUsuario(usuario);
-        reserva.setHorario(dto.getHorario());
+        reserva.setHorario(dto.getHorario());                       //Horario inicial
+        reserva.setHorarioFinal(dto.getHorario().plusMinutes(30));  //Horario final
         reserva = reservaRepository.save(reserva);
 
         usuario.getReservas().add(reserva);
         usuarioService.save(usuario); //Atualizar usuario
 
-        cabine.setStatus(EnumStatusCabine.RESERVADA);
+        cabine.setStatus(EnumStatusCabine.DISPONIVEL);
         cabine.setHorarioReserva(dto.getHorario());
         cabine.getReservas().add(cabine.getReservas().size(), reserva);
 
