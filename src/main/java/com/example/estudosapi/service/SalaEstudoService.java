@@ -138,19 +138,18 @@ public class SalaEstudoService {
                     throw new ConflictException("A cabine informada já foi reservada. Tente outro horário");
             }
         }
-        
-        
 
         Reserva reserva = new Reserva();
         reserva.setCabine(cabine);
         reserva.setUsuario(usuario);
-        reserva.setHorario(dto.getHorario());
+        reserva.setHorario(dto.getHorario());                       //Horario inicial
+        reserva.setHorarioFinal(dto.getHorario().plusMinutes(30));  //Horario final
         reserva = reservaRepository.save(reserva);
 
         usuario.getReservas().add(reserva);
         usuarioService.save(usuario); //Atualizar usuario
 
-        cabine.setStatus(EnumStatusCabine.RESERVADA);
+        cabine.setStatus(EnumStatusCabine.DISPONIVEL);
         cabine.setHorarioReserva(dto.getHorario());
         cabine.getReservas().add(cabine.getReservas().size(), reserva);
 

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.estudosapi.model.Cabine;
+import com.example.estudosapi.model.dtos.CabineDTO;
 import com.example.estudosapi.model.dtos.CabineStatusDTO;
 import com.example.estudosapi.model.dtos.ReservaDTO;
 import com.example.estudosapi.service.CabineService;
@@ -37,8 +38,8 @@ public class CabineController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Cabine> findById(@PathVariable Long id){
-        return ResponseEntity.ok(service.findById(id));
+    public ResponseEntity<CabineDTO> findById(@PathVariable Long id){
+        return ResponseEntity.ok(service.findByIdDTO(id));
     }
 
     @PutMapping("/{id}/status")
