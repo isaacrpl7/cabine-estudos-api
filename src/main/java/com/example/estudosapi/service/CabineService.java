@@ -45,17 +45,20 @@ public class CabineService {
 
         dto.setStatus(cabine.getStatus());
         
-        for (Reserva reserva : cabine.getReservas()) {
-            if(
-                (LocalDateTime.now().isAfter(reserva.getHorario()) || LocalDateTime.now().isEqual(reserva.getHorario()))
-                && 
-                (LocalDateTime.now().isBefore(reserva.getHorarioFinal()) || LocalDateTime.now().isEqual(reserva.getHorarioFinal()))
-            ){
-                
-                dto.setHorarioInicial(reserva.getHorario());
-                dto.setHorarioFinal(reserva.getHorarioFinal());
+        if(cabine.getStatus() == EnumStatusCabine.RESERVADA){
+
+            for (Reserva reserva : cabine.getReservas()) {
+                if(
+                    (LocalDateTime.now().isAfter(reserva.getHorario()) || LocalDateTime.now().isEqual(reserva.getHorario()))
+                    && 
+                    (LocalDateTime.now().isBefore(reserva.getHorarioFinal()) || LocalDateTime.now().isEqual(reserva.getHorarioFinal()))
+                ){
+                    
+                    dto.setHorarioInicial(reserva.getHorario());
+                    dto.setHorarioFinal(reserva.getHorarioFinal());
+                }
+                    
             }
-                
         }
         
         return dto;
@@ -172,7 +175,7 @@ public class CabineService {
     }
 
 
-    @Scheduled(fixedDelay = 5000)
+    @Scheduled(fixedDelay = 3000)
     @Transactional(readOnly = false)
     protected void fun(){
         Optional<Cabine> a = repository.findById(1L);
@@ -181,7 +184,7 @@ public class CabineService {
         for (Reserva reserva : cabine.getReservas()) {
 
             if( LocalDateTime.now().isBefore(reserva.getHorario())
-            &&  LocalDateTime.now().isAfter(reserva.getHorario().minusSeconds(20))){
+            &&  LocalDateTime.now().isAfter(reserva.getHorario().minusSeconds(10))){
 
                 cabine.setStatus(EnumStatusCabine.RESERVADA);
             }
