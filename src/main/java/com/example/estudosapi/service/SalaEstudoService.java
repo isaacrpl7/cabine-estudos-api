@@ -13,6 +13,7 @@ import com.example.estudosapi.exceptions.ConflictException;
 import com.example.estudosapi.exceptions.ForbiddenException;
 import com.example.estudosapi.exceptions.NotFoundException;
 import com.example.estudosapi.model.Cabine;
+import com.example.estudosapi.model.Localizacao;
 import com.example.estudosapi.model.Reserva;
 import com.example.estudosapi.model.SalaEstudo;
 import com.example.estudosapi.model.Usuario;
@@ -46,12 +47,18 @@ public class SalaEstudoService {
         try {
             cabine = cabineService.findById(1L);
         } catch (Exception e) {
+            Localizacao localizacao = new Localizacao();
+            localizacao.setBloco("DIMAP");
+            localizacao.setSetor("SETOR IV");
+
+
             cabine = new Cabine();
             cabine.setStatus(EnumStatusCabine.DISPONIVEL);
 
             SalaEstudo sala = new SalaEstudo();
             sala.setNome("LCC-2");
             sala.getCabines().add(cabine);
+            sala.setLocalizacao(localizacao);
     
             cabine.setSalaEstudo(sala);
     

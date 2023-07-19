@@ -179,6 +179,10 @@ public class CabineService {
     @Transactional(readOnly = false)
     protected void fun(){
         Optional<Cabine> a = repository.findById(1L);
+
+        if(a.isEmpty())
+            return;
+
         Cabine cabine = a.get();
         System.out.println("Verificando reservas...");
         for (Reserva reserva : cabine.getReservas()) {
