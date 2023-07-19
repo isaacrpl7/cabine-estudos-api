@@ -134,8 +134,13 @@ public class SalaEstudoService {
             }
 
             for (Reserva reserva : reservas) {
-                if(reserva.getHorario().equals(dto.getHorario()))
-                    throw new ConflictException("A cabine informada já foi reservada. Tente outro horário");
+
+                if( (dto.getHorario().isAfter(reserva.getHorario()) || dto.getHorario().isEqual(reserva.getHorario()))
+                    && 
+                    (dto.getHorario().isBefore(reserva.getHorarioFinal()) || dto.getHorario().isEqual(reserva.getHorario()))){
+                    throw new ConflictException("Conflito de horário entre reservas.");
+                }
+
             }
         }
 
