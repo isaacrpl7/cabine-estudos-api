@@ -21,12 +21,16 @@ import com.example.estudosapi.model.dtos.CabineStatusDTO;
 import com.example.estudosapi.model.dtos.ReservaDTO;
 import com.example.estudosapi.model.enums.EnumStatusCabine;
 import com.example.estudosapi.repository.CabineRepository;
+import com.example.estudosapi.repository.ReservaRepository;
 
 @Service
 public class CabineService {
 
     @Autowired
     private CabineRepository repository;
+
+    @Autowired
+    private ReservaRepository reservaRepository;
     
     @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
     public List<Cabine> findAll(){
@@ -196,5 +200,15 @@ public class CabineService {
         }
 
         repository.save(cabine);
+    }
+
+    @Transactional(readOnly = false)
+    public Cabine limparReservas(Long id){
+        Cabine cabine = findById(id);
+        reservaRepository.deleteAllByCabineId(id);
+        cabine.getReservas().clear();
+
+        System.out.println(cabine.getReservas().size());
+        return repository.save(cabine);
     }
 }

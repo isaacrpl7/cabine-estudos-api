@@ -9,4 +9,6 @@ import com.example.estudosapi.model.Reserva;
 public interface ReservaRepository extends JpaRepository<Reserva, Long>{
     
     Reserva findByCabineId(Long id);
+
+    void deleteAllByCabineId(Long id);
 }
