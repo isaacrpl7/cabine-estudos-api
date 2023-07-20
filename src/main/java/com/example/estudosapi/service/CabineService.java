@@ -49,7 +49,7 @@ public class CabineService {
 
         dto.setStatus(cabine.getStatus());
         
-        if(cabine.getStatus() == EnumStatusCabine.RESERVADA){
+        //if(cabine.getStatus() == EnumStatusCabine.RESERVADA){
 
             for (Reserva reserva : cabine.getReservas()) {
                 if(
@@ -63,7 +63,9 @@ public class CabineService {
                 }
                     
             }
-        }
+        //}
+
+
         
         return dto;
     }
