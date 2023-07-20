@@ -62,4 +62,9 @@ public class CabineController {
     public ResponseEntity<Cabine> limparReservas(@PathVariable Long id){
         return ResponseEntity.ok(service.limparReservas(id));
     }
+
+    @PutMapping("/{id}/cancelar")
+    public ResponseEntity<Cabine> cancelarReserva(@PathVariable Long id){
+        return ResponseEntity.ok(service.cancelarReserva(id));
+    }
 }
