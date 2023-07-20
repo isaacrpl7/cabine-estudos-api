@@ -49,7 +49,7 @@ public class CabineService {
 
         dto.setStatus(cabine.getStatus());
         
-        if(cabine.getStatus() == EnumStatusCabine.RESERVADA){
+        //if(cabine.getStatus() == EnumStatusCabine.RESERVADA){
 
             for (Reserva reserva : cabine.getReservas()) {
                 if(
@@ -63,7 +63,9 @@ public class CabineService {
                 }
                     
             }
-        }
+        //}
+
+
         
         return dto;
     }
@@ -210,5 +212,28 @@ public class CabineService {
 
         System.out.println(cabine.getReservas().size());
         return repository.save(cabine);
+    }
+
+    @Transactional(readOnly = false)
+    public Cabine cancelarReserva(Long id){
+        Cabine cabine = findById(id);
+
+        if(cabine == null)
+            return null;
+        
+        for (int i = 0; i < cabine.getReservas().size(); i++) {
+            Reserva reserva = cabine.getReservas().get(i);
+            if(
+                (LocalDateTime.now().isAfter(reserva.getHorario()) || LocalDateTime.now().isEqual(reserva.getHorario()))
+                && 
+                (LocalDateTime.now().isBefore(reserva.getHorarioFinal()) || LocalDateTime.now().isEqual(reserva.getHorarioFinal()))
+            ){
+                reservaRepository.deleteById(reserva.getId());
+                cabine.getReservas().remove(i);
+                return repository.save(cabine);
+            }
+        }
+
+        return null;
     }
 }
