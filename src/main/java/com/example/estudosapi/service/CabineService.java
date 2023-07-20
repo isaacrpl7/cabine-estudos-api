@@ -110,13 +110,7 @@ public class CabineService {
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     private Cabine reservar(Cabine cabine, LocalDateTime horario){
 
-        if(cabine.getStatus() != EnumStatusCabine.DISPONIVEL)
-            throw new ConflictException("A cabine não está disponível para reserva.");
-        
-        if(horario == null)
-            throw new BadRequestException("O horário informado é inválido (null)");
-
-        cabine.setHorarioReserva(horario);
+        //cabine.setHorarioReserva(horario);
         cabine.setStatus(EnumStatusCabine.RESERVADA);
         return update(cabine);
     }
