@@ -134,8 +134,6 @@ public class CabineService {
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     private Cabine ocupar(Cabine cabine){
 
-        if(cabine.getStatus() == EnumStatusCabine.RESERVADA)
-            throw new ConflictException("Esta cabine não pode ser ocupada, pois está reservada.");
         if(cabine.getStatus() == EnumStatusCabine.OCUPADA)
             throw new ConflictException("Esta já está ocupada.");
         
