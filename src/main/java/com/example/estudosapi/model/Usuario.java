@@ -25,6 +25,7 @@ public class Usuario {
 
     private String matricula;
 
+    @JsonIgnore
     @NotBlank
     private String senha;
 
